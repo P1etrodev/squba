@@ -1,0 +1,5 @@
+**/__pycache__
+build
+dist
+build_installer.bat
+test.py

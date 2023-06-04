@@ -1,0 +1,10 @@
+{
+	"separator": ",",
+	"icons": {
+		"📃": ["pdf"]
+	},
+	"default_icons": {
+		"folder": "📂",
+		"unkown_file": "📃"
+	}
+}
