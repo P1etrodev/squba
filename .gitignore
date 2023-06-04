@@ -3,3 +3,4 @@ build
 dist
 build_installer.bat
 test.py
+setup.py
