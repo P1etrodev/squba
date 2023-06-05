@@ -26,7 +26,7 @@ class AlertModes:
 def alert(message, mode="default", sep=False) -> None:
     modes = {
         "default": Fore.RESET,
-        "info": Fore.BLUE,
+        "info": Fore.CYAN,
         "warning": Fore.YELLOW,
         "error": Fore.RED,
         "success": Fore.GREEN,

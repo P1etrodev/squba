@@ -1,16 +1,19 @@
 from argparse import ArgumentParser, BooleanOptionalAction
 from source.modes._mode_parser import parse_mode
 
-from source.tools import clean_path
-from os.path import realpath
+from source.tools import alert, clean_path
+from os.path import realpath, dirname
+import sys
 
 
 def main():
     parser = ArgumentParser(prog="sq")
     parser.add_argument('-v', '--version',
                         action='version', version='Squba 0.5')
+    parser.add_argument('-r', '--root', action='store_true', default=False,
+                        help='Get the root directory where Squba is installed')
 
-    subparsers = parser.add_subparsers(dest="mode", required=True)
+    subparsers = parser.add_subparsers(dest="mode")
 
     #! Dive args
     dive_parser = subparsers.add_parser(
@@ -123,7 +126,7 @@ def main():
 
     #! Sonar args
     sonar_parser = subparsers.add_parser(
-        "sonar", help="Monitor your system resources"
+        "sonar", help="Monitor your system resources in real time"
     )
     sonar_parser.add_argument(
         '--network', action=BooleanOptionalAction, default=True)
@@ -134,10 +137,19 @@ def main():
 
     args = parser.parse_args()
 
-    if args.mode not in ['populate', 'deploy', 'sonar']:
-        args.path = realpath('.') if args.path == '.' else args.path
+    if args.root:
+        for value in sys.path:
+            if 'Squba' in value:
+                alert(value, mode='info')
+                break
+    else:
+        if args.mode:
+            if args.mode not in ['populate', 'deploy', 'sonar']:
+                args.path = realpath('.') if args.path == '.' else args.path
 
-    parse_mode(args)
+            parse_mode(args)
+        else:
+            parser.print_help()
 
 
 if __name__ == "__main__":
