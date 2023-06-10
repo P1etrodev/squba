@@ -28,4 +28,4 @@ Just download one of the [releases](https://github.com/Sylph1de/Squba/releases) 
 
 <h2><u>Warning</u></h2>
 
-Since <u style='color: #00c6ff; font-weight: bold'>Squba</u> is not registered as a safe application, you'll have to add it's install folder manually to your antivirus exceptions list, or disable your antivirus.
+Since **Squba** is not registered as a safe application, you'll have to add it's install folder manually to your antivirus exceptions list, or disable your antivirus.
