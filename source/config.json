@@ -1,10 +1,15 @@
 {
 	"separator": ",",
 	"icons": {
-		"📃": ["pdf"]
+		"📃": ["pdf"],
+		"📝": ["docx", "txt"],
+		"📷": ["png", "jpg", "jpeg"],
+		"🎶": ["wav", "mp3"],
+		"💿": ["exe", "lnk"],
+		"🐍": ["py"]
 	},
 	"default_icons": {
 		"folder": "📂",
-		"unkown_file": "📃"
+		"unknown_file": "📄"
 	}
 }

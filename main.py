@@ -1,13 +1,16 @@
-from argparse import ArgumentParser, BooleanOptionalAction
 from source.modes._mode_parser import parse_mode
 
 from source.tools import alert, clean_path
-from os.path import realpath, dirname
-import sys
+from os.path import realpath
+from source.tools import LazyImport
+
+argparse = LazyImport('argparse')
+
+# print('config', exists('config.json'))
 
 
-def main():
-    parser = ArgumentParser(prog="sq")
+def __main():
+    parser = argparse.ArgumentParser(prog="sq")
     parser.add_argument('-v', '--version',
                         action='version', version='Squba 0.5')
     parser.add_argument('-r', '--root', action='store_true', default=False,
@@ -17,32 +20,33 @@ def main():
 
     #! Dive args
     dive_parser = subparsers.add_parser(
-        "dive", help="Explore a directory (WIP)")
+        "dive", help="Explore a directory")
     dive_parser.add_argument(
-        "path", type=str, help="The path to the directory you want to explore"
+        '-p', "--path", type=clean_path, help="The path to the directory you want to explore", default='.'
     )
     dive_parser.add_argument(
         "-d",
-        "--depth",
+        "--max-depth",
         type=int,
-        default=0,
-        help="The depth of the diving process",
+        default=3,
+        help="The max depth of the diving process. Defaults to 3",
         metavar="",
     )
-    dive_parser.add_argument(
-        "-s",
-        "--search",
-        nargs="+",
+    filters_group = dive_parser.add_argument_group('filters')
+    filters_group.add_argument(
+        "-t",
+        "--terms",
+        nargs='+',
         default=[],
-        help="A list of terms to look for",
+        help="A list of terms to highlight",
         metavar="",
     )
-    dive_parser.add_argument(
-        "-e",
-        "--exclude",
-        nargs="+",
+    filters_group.add_argument(
+        "-x",
+        "--extensions",
+        nargs='+',
         default=[],
-        help="A list of terms to ignore",
+        help="A list of extensions to highlight",
         metavar="",
     )
 
@@ -50,16 +54,19 @@ def main():
     deploy_parser = subparsers.add_parser(
         "deploy", help="Create a file/folder")
     deploy_parser.add_argument(
-        "filename", type=str, help="The name of the new file/folder"
+        "filename", type=str, help="The name of the new file/folder",
+        metavar="",
     )
     deploy_parser.add_argument(
-        "-d", "--dest", type=clean_path, help="The destination path", required=True
+        "-d", "--dest", type=clean_path, help="The destination path", required=True,
+        metavar="",
     )
     deploy_parser.add_argument(
         "-o",
         "--origin",
         type=clean_path,
         help="The path to the original file/folder (use in case you want to copy something)",
+        metavar="",
     )
     deploy_parser.add_argument(
         "-f", "--force", action="store_true", help="Force the file overwriting"
@@ -78,35 +85,40 @@ def main():
         '--path', '-p',
         type=str,
         help="The path where to look for files with the provided terms/extensions",
-        default='.'
+        default='.',
+        metavar="",
     )
     purge_filters = purge_parser.add_mutually_exclusive_group(required=True)
     purge_filters.add_argument(
-        "--terms", "-t", action="append", help="A list of terms to look for", default=[]
+        "--terms", "-t", action="append", help="A list of terms to look for", default=[],
+        metavar="",
     )
     purge_filters.add_argument(
         "--extensions",
         "-e",
-        nargs="+",
+        nargs='+',
         help="A list of extensions to look for",
         default=[],
+        metavar="",
     )
     purge_filters.add_argument(
-        '--all', '-a', action="store_true", help='Delete all files'
+        '--all', '-a', action="store_true", help='Delete all files',
     )
     purge_parser.add_argument(
         "--ignore-terms",
         "-it",
-        nargs="+",
+        nargs='+',
         help="A list of terms to ignore",
         default=[],
+        metavar="",
     )
     purge_parser.add_argument(
         "--ignore-files",
         "-if",
-        nargs="+",
+        nargs='+',
         help="A list of files to ignore",
         default=[],
+        metavar="",
     )
 
     #! Populate args
@@ -114,14 +126,16 @@ def main():
         "populate", help="Bulk file/folder creation"
     )
     populate_parser.add_argument(
-        '--dest', '-d', type=str, help="Where to write the files", default='.'
+        '--dest', '-d', type=str, help="Where to write the files", default='.',
+        metavar="",
     )
     populate_parser.add_argument(
         "--files",
         "-f",
-        nargs="+",
+        nargs='+',
         required=True,
         help="A list of files to create. Use file.txt*[number] to create multiple copies of the same file",
+        metavar="",
     )
 
     #! Sonar args
@@ -129,19 +143,16 @@ def main():
         "sonar", help="Monitor your system resources in real time"
     )
     sonar_parser.add_argument(
-        '--network', action=BooleanOptionalAction, default=True)
+        '--network', action=argparse.BooleanOptionalAction, default=True, metavar="")
     sonar_parser.add_argument(
-        '--resources', action=BooleanOptionalAction, default=True)
+        '--resources', action=argparse.BooleanOptionalAction, default=True, metavar="")
     sonar_parser.add_argument(
-        '--disks', action=BooleanOptionalAction, default=True)
+        '--disks', action=argparse.BooleanOptionalAction, default=True, metavar="")
 
     args = parser.parse_args()
 
     if args.root:
-        for value in sys.path:
-            if 'Squba' in value:
-                alert(value, mode='info')
-                break
+        alert('C:/Users/Pietro/AppData/Local/Programs/Squba', mode='info')
     else:
         if args.mode:
             if args.mode not in ['populate', 'deploy', 'sonar']:
@@ -153,4 +164,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    __main()

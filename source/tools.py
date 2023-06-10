@@ -1,4 +1,21 @@
+from glob import glob
+import importlib
+from os import listdir
+from os.path import join, isdir
+import re
 from colorama import Fore
+from collections import deque
+
+
+class LazyImport:
+    def __init__(self, module_name: str):
+        self.module_name = module_name
+        self._module: any | None = None  # type: ignore
+
+    def __getattr__(self, attr: str):
+        if self._module is None:
+            self._module = importlib.import_module(self.module_name)
+        return getattr(self._module, attr)
 
 
 def to_gb(bytes):
@@ -40,32 +57,41 @@ def alert(message, mode="default", sep=False) -> None:
 
 
 class Preview:
-    def __init__(self, root, name=""):
+    def __init__(self, fichier: str, root='', level=0, term_pattern=None, ext_pattern=None):
         from pathlib import Path
         from os.path import join
 
-        self.name = name
-        self.root = root
-        self.absolute = join(self.root, self.name).replace("\\", "/")
-        self.path_data = Path(join(root, name))
+        absolute = join(root, fichier)
+        path_obj = Path(absolute)
+
+        self.name = path_obj.name.replace(path_obj.suffix, '')
+        self.ext = path_obj.suffix.replace('.', '')
+        self.full_name = path_obj.name
+        self.level = level
+        self.term_match = re.match(term_pattern, self.full_name,
+                                   re.IGNORECASE) if term_pattern else None
+        self.ext_match = re.match(ext_pattern, self.full_name,
+                                  re.IGNORECASE) if ext_pattern else None
+        self.absolute = clean_path(absolute)
+        self.is_dir = path_obj.is_dir()
         self.icon = self.get_icon()
-        if not self.path_data.is_dir():
-            self.ext = self.name.split(".").pop()
-        if self.name == "":
-            self.identation = ""
-        else:
-            self.identation = self.get_identation()
-        self.show = self.identation + f"{self.icon} {self.name}"
+        self.indent = self.get_indent()
 
     def get_icon(self) -> str:
         from json import load
+        from os.path import splitext
 
-        with open("source/config.json", "r", encoding="utf-8") as conf:
+        if splitext(__file__)[1] == 'py':
+            config_file = 'source/config.json'
+        else:
+            config_file = 'C:/Users/Pietro/AppData/Local/Programs/Squba/lib/source/config.json'
+
+        with open(config_file, "r", encoding="utf-8") as conf:
             config = load(conf)
             icons = config.get("icons")
             default_icons = config.get("default_icons")
 
-        if self.path_data.is_dir():
+        if self.is_dir:
             return default_icons.get("folder")
 
         for icon, extensions in icons.items():
@@ -74,8 +100,47 @@ class Preview:
 
         return default_icons.get("unknown_file")
 
-    def get_identation(self) -> str:
-        return "  " * (self.absolute.count("/") % 2)
+    def get_indent(self) -> str:
+        return "  " * self.level
 
     def __str__(self):
-        return self.show
+        term_match_prefix = Fore.LIGHTGREEN_EX if self.term_match else ''
+        ext_match_prefix = Fore.MAGENTA if self.ext_match else ''
+        return f'{self.indent}{self.icon} ' + term_match_prefix + self.name + ('/' if self.is_dir else '') + Fore.RESET + ('.' if not self.is_dir and re.match(r'^.*\..*$', self.full_name) else '') + ext_match_prefix + self.ext + Fore.RESET
+
+
+def get_content(path, level=0, max_level=3, term_pattern=None, ext_pattern=None):
+    from os.path import splitext
+    q = deque()
+    if level == 0:
+        q.append(Preview(path))
+    if level > max_level:
+        return q
+    if level != max_level:
+        list_dir = listdir(path)
+        list_dir.sort()
+        for fichier in list_dir:
+
+            if splitext(__file__)[1] == 'py':
+                ignore_file = 'source/.sqignore'
+            else:
+                ignore_file = 'C:/Users/Pietro/AppData/Local/Programs/Squba/lib/source/.sqignore'
+            with open(ignore_file, 'r') as f:
+                if fichier.startswith('.') or fichier in f.read().split('\n'):
+                    continue
+            absolute = join(path, fichier)
+            q.append(Preview(absolute, level=level + 1,
+                     term_pattern=term_pattern, ext_pattern=ext_pattern))
+            if isdir(absolute):
+                q.append(get_content(absolute, level + 1, max_level=max_level,
+                         term_pattern=term_pattern, ext_pattern=ext_pattern))
+    return q
+
+
+def show_content(q: deque):
+    while len(q) > 0:
+        e = q.popleft()
+        if isinstance(e, deque):
+            show_content(e)
+        else:
+            print(e)
