@@ -2,7 +2,7 @@
 
 <img src='https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.png' align='center'>
 
-<h2 align='center' style='font-size:25px'>🫧A set of squba-diving-themed tools to interact with your system in a custom way🫧</h2>
+<h3 align='center'>🫧A set of squba-diving-themed tools to interact with your system in a custom way🫧</h3>
 
 <img src='https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.png' align='center'>
 
@@ -10,13 +10,13 @@
 
 <h2><u>Feature check-list</u></h2>
 
-| Mode         | Definition                                 | State                           |
-| ------------ | ------------------------------------------ | ------------------------------- |
-| **Dive**     | Explore a directory (WIP)                  | <input type='checkbox'>         |
-| **Deploy**   | Create a file/folder (allows copying)      | <input type='checkbox' checked> |
-| **Populate** | Bulk file/folder creation                  | <input type='checkbox' checked> |
-| **Purge**    | Bulk file/folder deletion                  | <input type='checkbox' checked> |
-| **Sonar**    | Monitor your system resources in real time | <input type='checkbox' checked> |
+| Mode         | Definition                                 | State     |
+| ------------ | ------------------------------------------ | --------- |
+| **Dive**     | Explore a directory (WIP)                  | ✅ `Done` |
+| **Deploy**   | Create a file/folder (allows copying)      | ✅ `Done` |
+| **Populate** | Bulk file/folder creation                  | ✅ `Done` |
+| **Purge**    | Bulk file/folder deletion                  | ✅ `Done` |
+| **Sonar**    | Monitor your system resources in real time | ✅ `Done` |
 
 <br>
 

@@ -66,8 +66,8 @@ def sonar(args):
                 bytes_total = bytes_received + bytes_sent
 
                 new_received = (bytes_received - last_received) * 0.001
-                new_sent = (bytes_sent - last_sent) * 0.001
-                new_total = (bytes_total - last_total) * 0.001
+                new_sent = (bytes_sent - last_sent) * 0.001  # type: ignore
+                new_total = (bytes_total - last_total) * 0.001  # type: ignore
 
                 up_arrow = unescape('&uarr;')
                 down_arrow = unescape('&darr;')
