@@ -1,7 +1,18 @@
 {
 	"separator": ",",
 	"icons": {
-		"📝": ["docx", "txt", "doc", "odt", "pdf", "tex", "md", "xml", "html"],
+		"📝": [
+			"docx",
+			"txt",
+			"doc",
+			"odt",
+			"pdf",
+			"tex",
+			"md",
+			"xml",
+			"html",
+			"log"
+		],
 		"🎨": ["css", "scss"],
 		"📷": [
 			"jpg",
@@ -15,12 +26,17 @@
 			"psd",
 			"heic"
 		],
+		"📅": ["csv", "xslx", "xls"],
 		"🎶": ["mp3", "wav", "aac", "flac", "ogg", "aiff", "m4a", "wma", "mid"],
 		"🎬": ["mp4", "avi", "wmv", "mkv", "mpg", "webm"],
 		"💿": ["exe", "lnk", "apk", "ipa", "app", "elf"],
-		"🍵": ["java"],
-		"⚙️": ["js", "ts"],
-		"🐍": ["py"]
+		"⚙️": "ini",
+		"📀": "iso",
+		"☕": "java",
+		"🧰": ["js", "ts"],
+		"🐍": "py",
+		"#️⃣": "cs",
+		"➕": "cpp"
 	},
 	"default_icons": {
 		"folder": "📂",
