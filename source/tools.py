@@ -1,4 +1,3 @@
-from glob import glob
 import importlib
 from os import listdir
 from os.path import join, isdir
@@ -57,13 +56,14 @@ def alert(message, mode="default", sep=False) -> None:
 
 
 class Preview:
-    def __init__(self, fichier: str, root='', level=0, term_pattern=None, ext_pattern=None):
+    def __init__(self, fichier: str, root_path: str, root='', level=0, term_pattern=None, ext_pattern=None):
         from pathlib import Path
         from os.path import join
 
         absolute = join(root, fichier)
         path_obj = Path(absolute)
 
+        self.config_file = join(root_path, 'config.json')
         self.name = path_obj.name.replace(path_obj.suffix, '')
         self.ext = path_obj.suffix.replace('.', '')
         self.full_name = path_obj.name
@@ -79,14 +79,8 @@ class Preview:
 
     def get_icon(self) -> str:
         from json import load
-        from os.path import splitext
 
-        if splitext(__file__)[1] == 'py':
-            config_file = 'source/config.json'
-        else:
-            config_file = 'C:/Users/Pietro/AppData/Local/Programs/Squba/lib/source/config.json'
-
-        with open(config_file, "r", encoding="utf-8") as conf:
+        with open(self.config_file, "r", encoding="utf-8") as conf:
             config = load(conf)
             icons = config.get("icons")
             default_icons = config.get("default_icons")
@@ -94,8 +88,10 @@ class Preview:
         if self.is_dir:
             return default_icons.get("folder")
 
-        for icon, extensions in icons.items():
-            if self.ext in extensions:
+        for icon, ext in icons.items():
+            if isinstance(ext, str) and self.ext == ext:
+                return icon
+            elif self.ext in ext:
                 return icon
 
         return default_icons.get("unknown_file")
@@ -109,31 +105,26 @@ class Preview:
         return f'{self.indent}{self.icon} ' + term_match_prefix + self.name + ('/' if self.is_dir else '') + Fore.RESET + ('.' if not self.is_dir and re.match(r'^.*\..*$', self.full_name) else '') + ext_match_prefix + self.ext + Fore.RESET
 
 
-def get_content(path, level=0, max_level=3, term_pattern=None, ext_pattern=None):
-    from os.path import splitext
+def get_content(path, root_path, level=0, max_depth=3, term_pattern=None, ext_pattern=None):
     q = deque()
     if level == 0:
-        q.append(Preview(path))
-    if level > max_level:
+        q.append(Preview(path, root_path=root_path))
+    if level > max_depth:
         return q
-    if level != max_level:
+    if level != max_depth:
         list_dir = listdir(path)
         list_dir.sort()
-        for fichier in list_dir:
-
-            if splitext(__file__)[1] == 'py':
-                ignore_file = 'source/.sqignore'
-            else:
-                ignore_file = 'C:/Users/Pietro/AppData/Local/Programs/Squba/lib/source/.sqignore'
-            with open(ignore_file, 'r') as f:
-                if fichier.startswith('.') or fichier in f.read().split('\n'):
+        ignore_file = join(root_path, '.sqignore')
+        with open(ignore_file, 'r') as sqignore:
+            for fichier in list_dir:
+                if fichier.startswith('.') or fichier.startswith('@') or fichier in sqignore.read().split('\n'):
                     continue
-            absolute = join(path, fichier)
-            q.append(Preview(absolute, level=level + 1,
-                     term_pattern=term_pattern, ext_pattern=ext_pattern))
-            if isdir(absolute):
-                q.append(get_content(absolute, level + 1, max_level=max_level,
-                         term_pattern=term_pattern, ext_pattern=ext_pattern))
+                absolute = join(path, fichier)
+                q.append(Preview(absolute, root_path=root_path, level=level + 1,
+                                 term_pattern=term_pattern, ext_pattern=ext_pattern))
+                if isdir(absolute):
+                    q.append(get_content(absolute, level=level + 1, root_path=root_path, max_depth=max_depth,
+                                         term_pattern=term_pattern, ext_pattern=ext_pattern))
     return q
 
 
