@@ -1,4 +1,3 @@
-from glob import glob
 import importlib
 from os import listdir
 from os.path import join, isdir
@@ -109,31 +108,26 @@ class Preview:
         return f'{self.indent}{self.icon} ' + term_match_prefix + self.name + ('/' if self.is_dir else '') + Fore.RESET + ('.' if not self.is_dir and re.match(r'^.*\..*$', self.full_name) else '') + ext_match_prefix + self.ext + Fore.RESET
 
 
-def get_content(path, level=0, max_level=3, term_pattern=None, ext_pattern=None):
-    from os.path import splitext
+def get_content(args, level=0, max_level=3, term_pattern=None, ext_pattern=None):
     q = deque()
     if level == 0:
-        q.append(Preview(path))
+        q.append(Preview(args.path))
     if level > max_level:
         return q
     if level != max_level:
-        list_dir = listdir(path)
+        list_dir = listdir(args.path)
         list_dir.sort()
-        for fichier in list_dir:
-
-            if splitext(__file__)[1] == 'py':
-                ignore_file = 'source/.sqignore'
-            else:
-                ignore_file = 'C:/Users/Pietro/AppData/Local/Programs/Squba/lib/source/.sqignore'
-            with open(ignore_file, 'r') as f:
+        ignore_file = args.root_path.joinpath('.sqignore')
+        with open(ignore_file, 'r') as f:
+            for fichier in list_dir:
                 if fichier.startswith('.') or fichier in f.read().split('\n'):
                     continue
-            absolute = join(path, fichier)
-            q.append(Preview(absolute, level=level + 1,
-                     term_pattern=term_pattern, ext_pattern=ext_pattern))
-            if isdir(absolute):
-                q.append(get_content(absolute, level + 1, max_level=max_level,
-                         term_pattern=term_pattern, ext_pattern=ext_pattern))
+                absolute = join(args.path, fichier)
+                q.append(Preview(absolute, level=level + 1,
+                                 term_pattern=term_pattern, ext_pattern=ext_pattern))
+                if isdir(absolute):
+                    q.append(get_content(absolute, level + 1, max_level=max_level,
+                                         term_pattern=term_pattern, ext_pattern=ext_pattern))
     return q
 
 

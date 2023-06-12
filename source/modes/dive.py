@@ -20,6 +20,6 @@ def dive(args):
         ext_pattern = rf'^.*\.({positive_ext})$' if positive_ext != [] else None
 
         content = get_content(
-            args.path, max_level=args.max_depth, term_pattern=term_pattern, ext_pattern=ext_pattern)
+            args, max_level=args.max_depth, term_pattern=term_pattern, ext_pattern=ext_pattern)
 
         show_content(content)

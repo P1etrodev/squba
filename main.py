@@ -1,18 +1,18 @@
+from os.path import dirname
+from os import getcwd
+import sys
 from source.modes._mode_parser import parse_mode
 
 from source.tools import alert, clean_path
-from os.path import realpath
 from source.tools import LazyImport
 
 argparse = LazyImport('argparse')
-
-# print('config', exists('config.json'))
 
 
 def __main():
     parser = argparse.ArgumentParser(prog="sq")
     parser.add_argument('-v', '--version',
-                        action='version', version='Squba 0.5')
+                        action='version', version='Squba 1.0')
     parser.add_argument('-r', '--root', action='store_true', default=False,
                         help='Get the root directory where Squba is installed')
 
@@ -22,7 +22,7 @@ def __main():
     dive_parser = subparsers.add_parser(
         "dive", help="Explore a directory")
     dive_parser.add_argument(
-        '-p', "--path", type=clean_path, help="The path to the directory you want to explore", default='.'
+        '-p', "--path", type=clean_path, help="The path to the directory you want to explore", default=getcwd()
     )
     dive_parser.add_argument(
         "-d",
@@ -85,7 +85,7 @@ def __main():
         '--path', '-p',
         type=str,
         help="The path where to look for files with the provided terms/extensions",
-        default='.',
+        default=getcwd(),
         metavar="",
     )
     purge_filters = purge_parser.add_mutually_exclusive_group(required=True)
@@ -126,7 +126,7 @@ def __main():
         "populate", help="Bulk file/folder creation"
     )
     populate_parser.add_argument(
-        '--dest', '-d', type=str, help="Where to write the files", default='.',
+        '--dest', '-d', type=str, help="Where to write the files", default=getcwd(),
         metavar="",
     )
     populate_parser.add_argument(
@@ -151,13 +151,15 @@ def __main():
 
     args = parser.parse_args()
 
-    if args.root:
-        alert('C:/Users/Pietro/AppData/Local/Programs/Squba', mode='info')
-    else:
-        if args.mode:
-            if args.mode not in ['populate', 'deploy', 'sonar']:
-                args.path = realpath('.') if args.path == '.' else args.path
+    root_path = dirname(sys.executable) if getattr(
+        sys, 'frozen', False) else dirname(__file__)
 
+    if args.root:
+        alert(root_path, mode='info')
+    else:
+        from pathlib import Path
+        args.root_path = Path(root_path)
+        if args.mode:
             parse_mode(args)
         else:
             parser.print_help()
