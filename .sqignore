@@ -6,6 +6,8 @@ bin-release
 .alpackages
 .snapshots
 .output
+.git
+.github
 rad.json
 TestResults.xml
 .gradle

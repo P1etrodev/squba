@@ -4,3 +4,6 @@ dist
 build_installer.bat
 test**
 setup.py
+.idea
+.vscode
+Pipfile*
