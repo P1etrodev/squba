@@ -10,17 +10,18 @@
 
 <h2><u>Feature check-list</u></h2>
 
-| Mode         | Definition                                 | State     |
-| ------------ | ------------------------------------------ | --------- |
-| **Dive**     | Explore a directory (WIP)                  | ✅ `Done` |
+| Mode         | Definition                                 | State    |
+|--------------|--------------------------------------------|----------|
+| **Dive**     | Explore a directory                        | ✅ `Done` |
 | **Deploy**   | Create a file/folder (allows copying)      | ✅ `Done` |
 | **Populate** | Bulk file/folder creation                  | ✅ `Done` |
 | **Purge**    | Bulk file/folder deletion                  | ✅ `Done` |
 | **Sonar**    | Monitor your system resources in real time | ✅ `Done` |
+| **Info**     | Get your system info                       | ✅ `Done` |
 
 <br>
 
- <h2><u>Installing</u></h2>
+<h2><u>Installing</u></h2>
 
 Just download one of the [releases](https://github.com/Sylph1de/Squba/releases) and install it as any other software.
 
@@ -28,4 +29,5 @@ Just download one of the [releases](https://github.com/Sylph1de/Squba/releases) 
 
 <h2><u>Warning</u></h2>
 
-Since **Squba** is not registered as a safe application, you'll have to add it's install folder manually to your antivirus exceptions list, or disable your antivirus.
+Since **Squba** is not registered as a safe application, you'll have to add it's install folder manually to your
+antivirus exceptions list, or disable your antivirus.
