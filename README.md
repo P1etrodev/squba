@@ -10,20 +10,24 @@
 
 <h2><u>Feature check-list</u></h2>
 
-| Mode         | Definition                                 | State    |
-|--------------|--------------------------------------------|----------|
-| **Dive**     | Explore a directory                        | ✅ `Done` |
-| **Deploy**   | Create a file/folder (allows copying)      | ✅ `Done` |
-| **Populate** | Bulk file/folder creation                  | ✅ `Done` |
-| **Purge**    | Bulk file/folder deletion                  | ✅ `Done` |
-| **Sonar**    | Monitor your system resources in real time | ✅ `Done` |
-| **Info**     | Get your system info                       | ✅ `Done` |
+| Mode           | Definition                                 | State           |
+|----------------|--------------------------------------------|-----------------|
+| **Dive**       | Explore a directory                        | ✅ `Done`        |
+| ~~**Deploy**~~ | ~~Create a file/folder (allows copying)~~  | ~~❌ `Removed`~~ |
+| **Populate**   | Bulk file/folder creation                  | ✅ `Done`        |
+| **Purge**      | Bulk file/folder deletion                  | ✅ `Done`        |
+| **Sonar**      | Monitor your system resources in real time | ✅ `Done`        |
+| **Info**       | Get your system info                       | ✅ `Done`        |
 
 <br>
 
 <h2><u>Installing</u></h2>
 
 Just download one of the [releases](https://github.com/Sylph1de/Squba/releases) and install it as any other software.
+
+<h2><u>Usage</u></h2>
+
+In your preferred terminal, use `sq --help` for more information.
 
 <br>
 
